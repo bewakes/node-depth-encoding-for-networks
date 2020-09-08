@@ -8,20 +8,18 @@ NodeIndex = NewType('NodeIndex', Dict[Node, int])
 
 def node_depth_encode(tree: Tree, root: Node) -> Tuple[NodeIndex, List[int]]:
     nodes = tree.keys()
-    initial_node_index = {}
-    root_index = 0
     root_depth = 0
-    curr_index, depths, node_index = preorder(tree, root, [0]*len(nodes), initial_node_index, root_index, root_depth)
-    return node_index, depths
+    nodes, depths = preorder(tree, root, [], [], root_depth)
+    return {x: i for i, x in enumerate(nodes)}, depths
 
 
-def preorder(tree: Tree, node: Node, depths: List[int], node_index: NodeIndex, curr_index: int, curr_depth: int):
-    """Calculate preorder of given tree"""
-    node_index[node] = curr_index
-    depths[curr_index] = curr_depth
+def preorder(tree: Tree, node: Node, nodes: List[Node], depths: List[int], curr_depth: int):
+    """Calculate preorder of given tree
+    Return: Tuple of nodes in pre order, and the depths
+    """
     for adj_node in tree[node]:
-        curr_index, depths, node_index = preorder(tree, adj_node, depths, node_index, curr_index+1, curr_depth+1)
-    return curr_index, depths, node_index
+        nodes, depths = preorder(tree, adj_node, nodes, depths, curr_depth+1)
+    return [node, *nodes], [curr_depth, *depths]
 
 
 """
@@ -31,13 +29,13 @@ The following is a adjacancy list representation of T_from tree in figure 3 of t
 
 TREE: Tree = {
     1: [4],
-    4: [5, 10],
+    4: [10, 5],
     5: [6],
-    10: [11, 16],
+    10: [16, 11],
     6: [],
     11: [12],
     12: [],
-    16: [22, 23],
+    16: [23, 22],
     22: [],
     23: [],
 }
