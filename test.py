@@ -1,5 +1,9 @@
 from nde import node_depth_encode, NodeDepthEncodedTree, operator1
 
+"""
+The following is a adjacancy list representation of T_from tree in figure 3 of the paper:
+    Node-Depth Encoding and MultiobjectiveEvolutionary Algorithm Applied to Large-ScaleDistribution System Reconfiguration
+"""
 input_tree = {
     1: [4],
     4: [10, 5],
@@ -64,6 +68,7 @@ def test_operator1():
 
 def test_operator2():
     assert False
+    print('TEST OPERATOR 2: PASS')
 
 
 def test():
