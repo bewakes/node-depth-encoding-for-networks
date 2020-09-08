@@ -1,4 +1,4 @@
-from nde import node_depth_encode, NodeDepthEncodedTree
+from nde import node_depth_encode, NodeDepthEncodedTree, operator1
 
 input_tree = {
     1: [4],
@@ -37,7 +37,29 @@ def test_subtree():
 
 
 def test_operator1():
-    assert False
+    tree_from_nodes = [1, 4, 5, 6, 10, 11, 12, 16, 22, 23]
+    tree_from_depths = [0, 1, 2, 3, 2, 3, 4, 3, 4, 4]
+    tree_from = NodeDepthEncodedTree(tree_from_nodes, tree_from_depths)
+
+    tree_to_nodes = [3, 27, 21, 20, 26, 19, 18, 17, 25, 24]
+    tree_to_depths = [0, 1, 2, 3, 2, 3, 4, 5, 3, 4]
+    tree_to = NodeDepthEncodedTree(tree_to_nodes, tree_to_depths)
+
+    p = 11
+    a = 17
+
+    new_tree_from_nodes = [1, 4, 5, 6, 10, 16, 22, 23]
+    new_tree_from_depths = [0, 1, 2, 3, 2, 3, 4, 4]
+    new_tree_from = NodeDepthEncodedTree(new_tree_from_nodes, new_tree_from_depths)
+
+    new_tree_to_nodes = [3, 27, 21, 20, 26, 19, 18, 17, 11, 12, 25, 24]
+    new_tree_to_depths = [0, 1, 2, 3, 2, 3, 4, 5, 6, 7, 3, 4]
+    new_tree_to = NodeDepthEncodedTree(new_tree_to_nodes, new_tree_to_depths)
+
+    expected_new_tree_from, expected_new_tree_to = operator1(tree_from, tree_to, p, a)
+    assert new_tree_from == expected_new_tree_from
+    assert new_tree_to == expected_new_tree_to
+    print('TEST OPERATOR 1: PASS')
 
 
 def test_operator2():
@@ -47,6 +69,8 @@ def test_operator2():
 def test():
     test_encoding()
     test_subtree()
+    test_operator1()
+    test_operator2()
 
 
 test()
