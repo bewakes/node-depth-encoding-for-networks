@@ -6,6 +6,27 @@ Tree = NewType('Tree', Dict[Node, AdjacantNodes])
 NodeIndex = NewType('NodeIndex', Dict[Node, int])
 
 
+def node_depth_encode(tree: Tree, root: Node) -> 'NodeDepthEncodedTree':
+    root_depth = 0
+    nodes, depths = preorder(tree, root, [], [], root_depth)
+    return NodeDepthEncodedTree(nodes, depths)
+
+
+def preorder(tree: Tree, node: Node, nodes: List[Node], depths: List[int], curr_depth: int):
+    """Calculate preorder of given tree
+    Return: Tuple of nodes in pre order, and the depths
+    """
+    for adj_node in tree[node]:
+        nodes, depths = preorder(tree, adj_node, nodes, depths, curr_depth+1)
+    return [node, *nodes], [curr_depth, *depths]
+
+
+def operator1(tree_from, tree_to, p, a):
+    subtree_p = tree_from.get_subtree(p)
+    subtree_p.print()
+    raise Exception('Not impoelemeted')
+
+
 class NodeDepthEncodedTree:
     def __init__(self, nodes, depths):
         self.nodes = nodes
@@ -38,9 +59,9 @@ class NodeDepthEncodedTree:
 
     def __eq__(self, othertree):
         return (
-           self.depths == othertree.depths and
-           self.nodes_indices == othertree.nodes_indices and
-           self.nodes == othertree.nodes
+            self.depths == othertree.depths and
+            self.nodes_indices == othertree.nodes_indices and
+            self.nodes == othertree.nodes
        )
 
     def print(self):
@@ -48,32 +69,10 @@ class NodeDepthEncodedTree:
         print("Nodes  : ", ' '.join([str(x).ljust(4) for x in self.nodes]))
 
 
-def node_depth_encode(tree: Tree, root: Node) -> Tuple[NodeIndex, List[int]]:
-    root_depth = 0
-    nodes, depths = preorder(tree, root, [], [], root_depth)
-    return NodeDepthEncodedTree(nodes, depths)
-
-
-def preorder(tree: Tree, node: Node, nodes: List[Node], depths: List[int], curr_depth: int):
-    """Calculate preorder of given tree
-    Return: Tuple of nodes in pre order, and the depths
-    """
-    for adj_node in tree[node]:
-        nodes, depths = preorder(tree, adj_node, nodes, depths, curr_depth+1)
-    return [node, *nodes], [curr_depth, *depths]
-
-
-def operator1(tree_from, tree_to, p, a):
-    subtree_p = tree_from.get_subtree(p)
-    subtree_p.print()
-    raise Exception('Not impoelemeted')
-
-
 """
 The following is a adjacancy list representation of T_from tree in figure 3 of the paper:
     Node-Depth Encoding and MultiobjectiveEvolutionary Algorithm Applied to Large-ScaleDistribution System Reconfiguration
 """
-
 TREE: Tree = {
     1: [4],
     4: [10, 5],
