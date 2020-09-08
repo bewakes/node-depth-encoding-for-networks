@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, NewType, List
+from typing import Dict, NewType, List
 from nde_tree import NodeDepthEncodedTree
 
 Node = NewType('Node', int)
@@ -31,9 +31,17 @@ def operator1(tree_from: NodeDepthEncodedTree, tree_to: NodeDepthEncodedTree, p:
     return tree_from.prune_at(p), tree_to.insert_at(a, subtree_p)
 
 
-def operator2(tree_from, tree_to, p, a, r):
+def operator2(tree_from: NodeDepthEncodedTree, tree_to: NodeDepthEncodedTree, p: Node, r: Node, a: Node):
     """Returns (new_tree_from, new_tree_to).
     Does not modify original trees
     AKA Change Ancestor Operator (CAO)
     """
-    pass
+    subtree_p = tree_from.get_subtree(p)
+    subtree_r = subtree_p.get_subtree(r)  # new pruned subtree_p at r
+    pruned_p = subtree_p.prune_at(r)
+    new_subtree_r = subtree_r.insert_at(r, pruned_p)
+
+    new_tree_to = tree_to.insert_at(a, new_subtree_r)
+    new_tree_from = tree_from.prune_at(p)
+
+    return new_tree_from, new_tree_to
