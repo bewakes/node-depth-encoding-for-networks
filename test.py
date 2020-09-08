@@ -1,4 +1,4 @@
-from nde import node_depth_encode
+from nde import node_depth_encode, NodeDepthEncodedTree
 
 input_tree = {
     1: [4],
@@ -15,28 +15,38 @@ input_tree = {
 
 input_root = 1
 
-expected_node_indices = {
-    1: 0,
-    4: 1,
-    5: 2,
-    6: 3,
-    10: 4,
-    11: 5,
-    12: 6,
-    16: 7,
-    22: 8,
-    23: 9
-}
 
-expected_node_depths = [0, 1, 2, 3, 2, 3, 4, 3, 4, 4]
+def test_encoding():
+    expected_nodes_order = [1, 4, 5, 6, 10, 11, 12, 16, 22, 23]
+    expected_node_depths = [0, 1, 2, 3, 2, 3, 4, 3, 4, 4]
+    expected_endoced_tree = NodeDepthEncodedTree(expected_nodes_order, expected_node_depths)
+
+    encoded_tree = node_depth_encode(input_tree, input_root)
+    assert encoded_tree == expected_endoced_tree
+    print('Test Encoding: PASS')
+
+
+def test_subtree():
+    encoded_tree = node_depth_encode(input_tree, input_root)
+    p_node = 10
+    expected_sub_nodes_order = [10, 11, 12, 16, 22, 23]
+    expected_sub_nodes_depth = [0, 1, 2, 1, 2, 2]
+    expected_subtree = NodeDepthEncodedTree(expected_sub_nodes_order, expected_sub_nodes_depth)
+    assert expected_subtree == encoded_tree.get_subtree(p_node)
+    print('Test Subtree: PASS')
+
+
+def test_operator1():
+    assert False
+
+
+def test_operator2():
+    assert False
 
 
 def test():
-    node_indices, node_depths = node_depth_encode(input_tree, input_root)
-    assert node_indices == expected_node_indices
-    assert node_depths == expected_node_depths
-    print('PASS')
+    test_encoding()
+    test_subtree()
 
 
-if __name__ == '__main__':
-    test()
+test()
